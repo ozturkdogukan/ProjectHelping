@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace ProjectHelping.Data.Models
 {
+    [Table("Advert")]
     public class Advert
     {
+        [Key]
         public int Id { get; set; }
         public int SubProjectId { get; set; }
         public int Quata { get; set; }

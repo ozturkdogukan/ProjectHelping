@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace ProjectHelping.Data.Models
 {
+    [Table("Developer")]
     public class Developer : User
     {
-        public string Mail { get; set; }
+        
         public string Phone { get; set; }
         public string Name { get; set; }
         public string Surname { get; set; }
