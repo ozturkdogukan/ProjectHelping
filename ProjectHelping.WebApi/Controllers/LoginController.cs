@@ -43,13 +43,29 @@ namespace ProjectHelping.WebApi.Controllers
         [HttpPost("Register")]
         public IActionResult Register([FromBody] User userLogin)
         {
-            // Fluentvalidation kurulumunu test etmek için  yazıldı register metodu tamamlanacak..
-
+            // Fluentvalidation kurulumunu test etmek için  yazıldı register metodu tamamlanacak..                  
             UserValidator userValidator = new UserValidator();
             var result = userValidator.Validate(userLogin);
             if (result.IsValid)
             {
-                return Ok();
+                using (UnitOfWork uow = new UnitOfWork())
+                {
+                    if (uow.GetRepository<User>().Any(x => x.Email.Equals(userLogin.Email) || x.Username.Equals(userLogin.Username)))
+                    {
+                        return BadRequest("Bu email veya kullanıcı adı zaten kayıtlı.");
+                    }
+                    else
+                    {
+
+                        userLogin.Password = Extensions.Extensions.MD5Sifrele(userLogin.Password.Trim());
+                        uow.GetRepository<User>().Add(userLogin);
+                        if (uow.SaveChanges() > 0)
+                        {
+                            return Ok("Kayıt başarılı..");
+                        }
+                    }
+
+                }
             }
             var errorMessages = result.Errors.Select(x => x.ErrorMessage).ToList();
             return BadRequest(errorMessages);
