@@ -78,10 +78,10 @@ namespace ProjectHelping.WebApi.Controllers
 
             var claims = new[]
             {
-                new Claim(ClaimTypes.NameIdentifier,user.Username),
-                new Claim(ClaimTypes.Email,user.Email),
-                new Claim(ClaimTypes.GivenName,user.Givenname),
-                new Claim(ClaimTypes.Role, user.Role)
+                new Claim("Username",user.Username),
+                new Claim("Email",user.Email),
+                new Claim("Givenname",user.Givenname),
+                new Claim("Role", user.Role)
             };
 
             var token = new JwtSecurityToken(_config["Jwt:Issuer"],

@@ -31,7 +31,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-builder.Services.AddDbContext<ProjectDbContext>(item => item.UseSqlServer(configuration.GetConnectionString("myconn")));
+builder.Services.AddDbContext<ProjectDbContext>(item => item.UseMySQL(configuration.GetConnectionString("mysql")));
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddControllers()
     .AddFluentValidation(x => x.RegisterValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
@@ -70,13 +70,17 @@ builder.Services.AddSwaggerGen(c =>
 
 
 var app = builder.Build();
-
+IServiceScopeFactory serviceScopeFactory = app.Services.GetRequiredService<IServiceScopeFactory>();
+using IServiceScope serviceScope = serviceScopeFactory.CreateScope();
+ProjectDbContext dbContext = serviceScope.ServiceProvider.GetService<ProjectDbContext>();
+dbContext.Database.EnsureCreated();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+
 }
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 

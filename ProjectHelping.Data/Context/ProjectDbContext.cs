@@ -25,7 +25,7 @@ namespace ProjectHelping.Data.Context
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Server=(LocalDb)\\MSSQLLocalDB;Database=projectassistance;Trusted_Connection=True;TrustServerCertificate=True");
+                optionsBuilder.UseMySQL("server=db;port=3306;user=root;password=S3cur3P@ssW0rd!;database=projectassistance");
             }
         }
 

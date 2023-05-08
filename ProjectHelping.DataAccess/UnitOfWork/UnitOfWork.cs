@@ -26,7 +26,7 @@ namespace ProjectHelping.DataAccess.UnitOfWork
                 if (_dbContext == null)
                 {
                     var contextOptions = new DbContextOptionsBuilder<ProjectDbContext>()
-                    .UseSqlServer(Environment.GetEnvironmentVariable("myconn"))
+                    .UseMySQL("server=db;port=3306;user=root;password=S3cur3P@ssW0rd!;database=projectassistance")
                     .Options;
                     _dbContext = new ProjectDbContext(contextOptions);
                 }
