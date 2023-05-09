@@ -15,6 +15,15 @@ var provider = builder.Services.BuildServiceProvider();
 
 var configuration = provider.GetRequiredService<IConfiguration>();
 
+builder.Services.AddCors(opt =>
+{
+    opt.AddPolicy(name: "CorsPolicy", builder =>
+    {
+        builder.AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -79,6 +88,7 @@ if (app.Environment.IsDevelopment())
 {
 
 }
+app.UseCors("CorsPolicy");
 app.UseSwagger();
 app.UseSwaggerUI();
 
