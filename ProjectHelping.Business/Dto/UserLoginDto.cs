@@ -1,4 +1,4 @@
-﻿namespace ProjectHelping.WebApi.Dto
+﻿namespace ProjectHelping.Business.Dto
 {
     public class UserLoginDto
     {
