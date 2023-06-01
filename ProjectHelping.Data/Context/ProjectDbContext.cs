@@ -35,6 +35,7 @@ namespace ProjectHelping.Data.Context
         public DbSet<Employer> Employer { get; set; }
         public DbSet<SubProject> SubProject { get; set; }
         public DbSet<Relation> Relation { get; set; }
+        public DbSet<Recourse> Recourse { get; set; }
 
     }
 
