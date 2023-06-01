@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ProjectHelping.Data\ProjectHelping.Data.csproj" />
+    <ProjectReference Include="..\ProjectHelping.Utils\ProjectHelping.Utils.csproj" />
   </ItemGroup>
 
 </Project>

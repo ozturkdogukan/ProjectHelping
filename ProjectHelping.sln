@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32901.215
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectHelping.Data", "ProjectHelping.Data\ProjectHelping.Data.csproj", "{8F6A4CA7-6DB7-4C2E-876E-7A225894E990}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectHelping.Data", "ProjectHelping.Data\ProjectHelping.Data.csproj", "{8F6A4CA7-6DB7-4C2E-876E-7A225894E990}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectHelping.DataAccess", "ProjectHelping.DataAccess\ProjectHelping.DataAccess.csproj", "{E008AF47-ED0E-458E-A919-2C7F347F33D1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectHelping.DataAccess", "ProjectHelping.DataAccess\ProjectHelping.DataAccess.csproj", "{E008AF47-ED0E-458E-A919-2C7F347F33D1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectHelping.Business", "ProjectHelping.Business\ProjectHelping.Business.csproj", "{2DAB4D1F-E5A2-443B-95B4-888D6D593B90}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectHelping.Business", "ProjectHelping.Business\ProjectHelping.Business.csproj", "{2DAB4D1F-E5A2-443B-95B4-888D6D593B90}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectHelping.WebApi", "ProjectHelping.WebApi\ProjectHelping.WebApi.csproj", "{3BB7A078-B47E-4DF8-9244-940B5E4D4A82}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectHelping.WebApi", "ProjectHelping.WebApi\ProjectHelping.WebApi.csproj", "{3BB7A078-B47E-4DF8-9244-940B5E4D4A82}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectHelping.Utils", "ProjectHelping.Utils\ProjectHelping.Utils.csproj", "{B7CAB7E1-7609-494F-B40F-824F563E5F3A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{3BB7A078-B47E-4DF8-9244-940B5E4D4A82}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3BB7A078-B47E-4DF8-9244-940B5E4D4A82}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3BB7A078-B47E-4DF8-9244-940B5E4D4A82}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7CAB7E1-7609-494F-B40F-824F563E5F3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7CAB7E1-7609-494F-B40F-824F563E5F3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7CAB7E1-7609-494F-B40F-824F563E5F3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7CAB7E1-7609-494F-B40F-824F563E5F3A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

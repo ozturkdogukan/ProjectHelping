@@ -1,42 +1,60 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using ProjectHelping.Data.Models;
 using ProjectHelping.DataAccess.UnitOfWork;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace ProjectHelping.WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RelationController : ControllerBase
-    {// GET: api/<DeveloperController>
+    public class RecourseController : ControllerBase
+    {
         [HttpGet]
         public IActionResult GetAll()
         {
             using (UnitOfWork uow = new UnitOfWork())
             {
-                return Ok(uow.GetRepository<Relation>().GetAll().ToList());
+                return Ok(uow.GetRepository<Recourse>().GetAll().ToList());
             }
         }
 
         // GET api/<DeveloperController>/5
         [HttpGet("{id}")]
-        public Relation Get(string id)
+        public Recourse Get(string id)
         {
             using (UnitOfWork uow = new UnitOfWork())
             {
-                var project = uow.GetRepository<Relation>().Get(x => x.Id.Equals(id));
+                var project = uow.GetRepository<Recourse>().Get(x => x.Id.Equals(id));
                 return project;
             }
         }
 
-        [HttpPost("AddRelation")]
-        public IActionResult AddRelation(Relation relation)
+        [HttpGet("GetDeveloperRecourse/{id}")]
+        public List<Recourse> GetDeveloperRecourse(string id)
+        {
+            using (UnitOfWork uow = new UnitOfWork())
+            {
+                var recourses = uow.GetRepository<Recourse>().GetAll(x => x.DeveloperId.Equals(id))?.ToList();
+                return recourses;
+            }
+        }
+        [HttpGet("GetEmployerRecourse/{id}")]
+        public List<Recourse> GetEmployerRecourse(string id)
+        {
+            using (UnitOfWork uow = new UnitOfWork())
+            {
+                var recourses = uow.GetRepository<Recourse>().GetAll(x => x.EmployerId.Equals(id))?.ToList();
+                return recourses;
+            }
+        }
+
+        [HttpPost("AddRecourse")]
+        public IActionResult AddRecourse(Recourse relation)
         {
             using (UnitOfWork uow = new UnitOfWork())
             {
                 relation.Id = System.Guid.NewGuid().ToString();
-                uow.GetRepository<Relation>().Add(relation);
+                uow.GetRepository<Recourse>().Add(relation);
                 if (uow.SaveChanges() > 0)
                 {
                     return Ok();
@@ -47,7 +65,7 @@ namespace ProjectHelping.WebApi.Controllers
 
         // PUT api/<DeveloperController>/5
         [HttpPut("Update")]
-        public IActionResult Update([FromBody] Relation relation)
+        public IActionResult Update([FromBody] Recourse relation)
         {
             if (relation == null)
             {
@@ -56,9 +74,9 @@ namespace ProjectHelping.WebApi.Controllers
 
             using (UnitOfWork uow = new UnitOfWork())
             {
-                var pro = uow.GetRepository<Relation>().Get(x => x.Id.Equals(relation.Id));
+                var pro = uow.GetRepository<Recourse>().Get(x => x.Id.Equals(relation.Id));
                 Extensions.ObjectMapper.Map(pro, relation);
-                uow.GetRepository<Relation>().Update(pro);
+                uow.GetRepository<Recourse>().Update(pro);
                 if (uow.SaveChanges() > 0)
                 {
                     return Ok();
@@ -74,12 +92,12 @@ namespace ProjectHelping.WebApi.Controllers
         {
             using (UnitOfWork uow = new UnitOfWork())
             {
-                var pro = uow.GetRepository<Relation>().Get(x => x.Id.Equals(id));
+                var pro = uow.GetRepository<Recourse>().Get(x => x.Id.Equals(id));
                 if (pro == null)
                 {
                     return NotFound();
                 }
-                uow.GetRepository<Relation>().Delete(pro);
+                uow.GetRepository<Recourse>().Delete(pro);
                 if (uow.SaveChanges() > 0)
                 {
                     return Ok();

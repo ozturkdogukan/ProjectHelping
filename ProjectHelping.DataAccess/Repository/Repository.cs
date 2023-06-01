@@ -1,4 +1,5 @@
 ﻿
+using K4os.Compression.LZ4.Streams;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using ProjectHelping.Data.Models;
@@ -6,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,6 +18,8 @@ namespace ProjectHelping.DataAccess.Repository
         private readonly DbContext DbContext;
         private readonly DbSet<T> DbSet;
         public List<string> ErrorMessageList = new List<string>();
+        private PropertyInfo CrdtProperty = typeof(T).GetProperty("CRDT");
+        private PropertyInfo CrtmProperty = typeof(T).GetProperty("CRTM");
 
         public Repository(DbContext dbContext, List<string> errorMessageList)
         {
@@ -25,6 +29,11 @@ namespace ProjectHelping.DataAccess.Repository
         }
         public void Add(T entity)
         {
+            if (CrdtProperty != null)
+                CrdtProperty.SetValue(entity, ProjectHelping.Utils.Extensions.Extensions.ToStringYyyyMMdd(DateTime.Now));
+
+            if (CrtmProperty != null)
+                CrtmProperty.SetValue(entity, ProjectHelping.Utils.Extensions.Extensions.ToStringHhmmss(DateTime.Now));
             DbSet.Add(entity);
         }
 

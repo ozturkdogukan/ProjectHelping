@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ProjectHelping.Business.Dto;
 using ProjectHelping.Data.Models;
 using ProjectHelping.DataAccess.UnitOfWork;
+using ProjectHelping.Utils.Extensions;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -12,30 +14,55 @@ namespace ProjectHelping.WebApi.Controllers
     {
         // GET: api/<DeveloperController>
         [HttpGet]
-        public IActionResult GetAll()
+        public List<ProjectDto> GetAll()
         {
-            using (UnitOfWork uow = new UnitOfWork())
-            {
-                return Ok(uow.GetRepository<Project>().GetAll().ToList());
-            }
+            UnitOfWork uow = new UnitOfWork();
+                List<ProjectDto> resultDto = new List<ProjectDto>();
+                var projects = uow.GetRepository<Project>().GetAll();
+                var employers = uow.GetRepository<Employer>().GetAll().ToList();
+                foreach (var item in projects)
+                {
+                    var employer = employers.Where(x => x.Id.Equals(item.EmployerId))?.FirstOrDefault();
+                    var projectDto = ObjectMapper.Map<ProjectDto>(item);
+                    projectDto.Employer = employer;
+                    resultDto.Add(projectDto);
+                }
+                return resultDto;
+            
         }
 
         // GET api/<DeveloperController>/5
         [HttpGet("{id}")]
-        public Project Get(int id)
+        public ProjectDto Get(string id)
         {
             using (UnitOfWork uow = new UnitOfWork())
             {
                 var project = uow.GetRepository<Project>().Get(x => x.Id.Equals(id));
-                return project;
+                var employer = uow.GetRepository<Employer>().Get(x => x.Id.Equals(project.EmployerId));
+                var projectDto = ObjectMapper.Map<ProjectDto>(project);
+                projectDto.Employer = employer;
+                return projectDto;
             }
         }
+
+        [HttpGet("/GetProjectAndSubProject/{id}")]
+        public List<SubProject> GetProjectAndSubProject(string id)
+        {
+            using (UnitOfWork uow = new UnitOfWork())
+            {
+                var project = uow.GetRepository<Project>().Get(x => x.Id.Equals(id));
+                var subprojects = uow.GetRepository<SubProject>().GetAll(x => x.ProjectId.Equals(id))?.ToList();
+                return subprojects;
+            }
+        }
+
 
         [HttpPost("AddProject")]
         public IActionResult AddProject(Project project)
         {
             using (UnitOfWork uow = new UnitOfWork())
             {
+                project.Id = System.Guid.NewGuid().ToString();
                 uow.GetRepository<Project>().Add(project);
                 if (uow.SaveChanges() > 0)
                 {
@@ -70,7 +97,7 @@ namespace ProjectHelping.WebApi.Controllers
 
         // DELETE api/<DeveloperController>/5
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public IActionResult Delete(string id)
         {
             using (UnitOfWork uow = new UnitOfWork())
             {

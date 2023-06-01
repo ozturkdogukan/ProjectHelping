@@ -12,9 +12,11 @@ namespace ProjectHelping.Data.Models
     public class SubProject
     {
         [Key]
-        public int Id { get; set; }
+        public string Id { get; set; }
         public string Name { get; set; }
-        public int ProjectId { get; set; }
+        public string ProjectId { get; set; }
         public string Desc { get; set; }
+        public string CRDT { get; set; }
+        public string CRTM { get; set; }
     }
 }

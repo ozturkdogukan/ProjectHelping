@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ProjectHelping.Data.Models;
 using ProjectHelping.DataAccess.UnitOfWork;
+using System;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -22,7 +23,7 @@ namespace ProjectHelping.WebApi.Controllers
 
         // GET api/<DeveloperController>/5
         [HttpGet("{id}")]
-        public SubProject Get(int id)
+        public SubProject Get(string id)
         {
             using (UnitOfWork uow = new UnitOfWork())
             {
@@ -31,15 +32,27 @@ namespace ProjectHelping.WebApi.Controllers
             }
         }
 
+        [HttpGet("/GetSubProjectAdverts/{id}")]
+        public List<Advert> GetSubProjectAdverts(string id)
+        {
+            using (UnitOfWork uow = new UnitOfWork())
+            {
+                var project = uow.GetRepository<SubProject>().Get(x => x.Id.Equals(id));
+                var adverts = uow.GetRepository<Advert>().GetAll(x => x.SubProjectId.Equals(id))?.ToList();
+                return adverts;
+            }
+        }
+
         [HttpPost("AddSubProject")]
         public IActionResult AddProject(SubProject project)
         {
             using (UnitOfWork uow = new UnitOfWork())
             {
+                project.Id = System.Guid.NewGuid().ToString();
                 uow.GetRepository<SubProject>().Add(project);
                 if (uow.SaveChanges() > 0)
                 {
-                    return Ok();
+                    return Ok(project);
                 }
                 return StatusCode(500);
             }
@@ -70,7 +83,7 @@ namespace ProjectHelping.WebApi.Controllers
 
         // DELETE api/<DeveloperController>/5
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public IActionResult Delete(string id)
         {
             using (UnitOfWork uow = new UnitOfWork())
             {

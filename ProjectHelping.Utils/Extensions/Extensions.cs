@@ -2,7 +2,7 @@
 using System.Security.Cryptography;
 using System.Globalization;
 
-namespace ProjectHelping.WebApi.Extensions
+namespace ProjectHelping.Utils.Extensions
 {
 
     public static class Extensions
@@ -68,7 +68,6 @@ namespace ProjectHelping.WebApi.Extensions
         {
             return dateTime.ToString("HHmmssFFF").PadRight(9, '0');
         }
-
         /// <summary>
         /// verilen tarih formatını yyyMMdd string formatında dönüş yapar
         /// </summary>

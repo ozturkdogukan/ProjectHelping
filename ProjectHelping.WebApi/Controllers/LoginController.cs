@@ -1,4 +1,5 @@
 ﻿using Azure.Identity;
+using Google.Protobuf.WellKnownTypes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -63,12 +64,14 @@ namespace ProjectHelping.WebApi.Controllers
                         {
                             Developer developer = new Developer();
                             Extensions.ObjectMapper.Map(developer, register);
+                            developer.Id = System.Guid.NewGuid().ToString();
                             uow.GetRepository<Developer>().Add(developer);
                         }
                         else if (register.Role.Equals("Employer"))
                         {
                             Employer employer = new Employer();
                             Extensions.ObjectMapper.Map(employer, register);
+                            employer.Id = System.Guid.NewGuid().ToString();
                             uow.GetRepository<Employer>().Add(employer);
                         }
 
@@ -91,7 +94,7 @@ namespace ProjectHelping.WebApi.Controllers
             {
                 Developer developer;
                 Employer employer;
-                string username = "", email = "", name = "", surname = "", role = "";
+                string username = "", email = "", name = "", surname = "", role = "", id = "";
 
                 var userPassword = Extensions.Extensions.MD5Sifrele(userDto.Password.Trim());
                 developer = uow.GetRepository<Developer>().Get(x => x.Username.Equals(userDto.Username) && x.Password.Equals(userPassword));
@@ -99,6 +102,7 @@ namespace ProjectHelping.WebApi.Controllers
                 if (developer != null)
                 {
                     var user = developer;
+                    id = user.Id.ToString();
                     username = user.Username;
                     email = user.Email;
                     name = user.Name;
@@ -108,6 +112,7 @@ namespace ProjectHelping.WebApi.Controllers
                 else if (employer != null)
                 {
                     var user = employer;
+                    id = user.Id.ToString();
                     username = user.Username;
                     email = user.Email;
                     name = user.Name;
@@ -118,6 +123,7 @@ namespace ProjectHelping.WebApi.Controllers
                 var claims = new[]
                                 {
                 new Claim("Username",username),
+                new Claim("Id", id.ToString()),
                 new Claim("Email",email),
                 new Claim("Name",name),
                 new Claim("Role",role),

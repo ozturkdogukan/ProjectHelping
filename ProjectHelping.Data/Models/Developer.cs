@@ -11,7 +11,7 @@ namespace ProjectHelping.Data.Models
     [Table("Developer")]
     public class Developer
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         public string Username { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
@@ -19,5 +19,8 @@ namespace ProjectHelping.Data.Models
         public string Name { get; set; }
         public string Surname { get; set; }
         public string Expertise { get; set; }
+        public string CRDT { get; set; }
+        public string CRTM { get; set; }
+
     }
 }

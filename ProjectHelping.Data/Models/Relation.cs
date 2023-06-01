@@ -10,11 +10,11 @@ namespace ProjectHelping.Data.Models
     [Table("Relation")]
     public class Relation
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         public string RelationType { get; set; }
         public string MasterObject { get; set; }
         public string SlaveObject { get; set; }
-        public int MasterId { get; set; }
-        public int SlaveId{ get; set; }
+        public string MasterId { get; set; }
+        public string SlaveId { get; set; }
     }
 }

@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ProjectHelping.Business.Dto;
 using ProjectHelping.Data.Models;
 using ProjectHelping.DataAccess.UnitOfWork;
+using ProjectHelping.Utils.Extensions;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -11,23 +13,64 @@ namespace ProjectHelping.WebApi.Controllers
     public class AdvertController : ControllerBase
     {
         // GET: api/<DeveloperController>
-        [HttpGet]
-        public IActionResult GetAll()
+        [HttpGet("GetAll")]
+        public List<AdvertDto> GetAll()
         {
             using (UnitOfWork uow = new UnitOfWork())
             {
-                return Ok(uow.GetRepository<Advert>().GetAll().ToList());
+                List<AdvertDto> resultDto = new List<AdvertDto>();
+                var adverts = uow.GetRepository<Advert>().GetAll();
+                var subprojects = uow.GetRepository<SubProject>().GetAll().ToList();
+                var employers = uow.GetRepository<Employer>().GetAll().ToList();
+                foreach (var item in adverts)
+                {
+                    var employer = employers.Where(x => x.Id.Equals(item.EmployerId))?.FirstOrDefault();
+                    var subproject = subprojects.Where(x => x.Id.Equals(item.SubProjectId))?.FirstOrDefault();
+                    var advertDto = ObjectMapper.Map<AdvertDto>(item);
+                    advertDto.Employer = employer;
+                    advertDto.SubProject = subproject;
+                    resultDto.Add(advertDto);
+                }
+                return resultDto;
             }
         }
 
         // GET api/<DeveloperController>/5
         [HttpGet("{id}")]
-        public Advert Get(int id)
+        public AdvertDto Get(string id)
         {
             using (UnitOfWork uow = new UnitOfWork())
             {
                 var project = uow.GetRepository<Advert>().Get(x => x.Id.Equals(id));
-                return project;
+                var employer = uow.GetRepository<Employer>().Get(x => x.Id.Equals(project.EmployerId));
+                var subproject = uow.GetRepository<SubProject>().Get(x => x.Id.Equals(project.SubProjectId));
+                var advertDto = ObjectMapper.Map<AdvertDto>(project);
+                advertDto.Employer = employer;
+                advertDto.SubProject = subproject;
+                return advertDto;
+            }
+        }
+
+        [HttpGet("GetFav/{id}")]
+        public List<AdvertDto> GetFav(string id)
+        {
+            using (UnitOfWork uow = new UnitOfWork())
+            {
+                List<AdvertDto> resultList = new List<AdvertDto>();
+                var subprojects = uow.GetRepository<SubProject>().GetAll().ToList();
+                var employers = uow.GetRepository<Employer>().GetAll().ToList();
+                var relations = uow.GetRepository<Relation>().GetAll(x => x.SlaveId.Equals(id));
+                foreach (var item in relations)
+                {
+                    var advert = uow.GetRepository<Advert>().Get(x => x.Id.Equals(item.MasterId));
+                    var advertDto = ObjectMapper.Map<AdvertDto>(advert);
+                    var employer = employers.Where(x => x.Id.Equals(advert.EmployerId))?.FirstOrDefault();
+                    var subproject = subprojects.Where(x => x.Id.Equals(advert.SubProjectId))?.FirstOrDefault();
+                    advertDto.Employer = employer;
+                    advertDto.SubProject = subproject;
+                    resultList.Add(advertDto);
+                }
+                return resultList;
             }
         }
 
@@ -36,6 +79,7 @@ namespace ProjectHelping.WebApi.Controllers
         {
             using (UnitOfWork uow = new UnitOfWork())
             {
+                project.Id = System.Guid.NewGuid().ToString();
                 uow.GetRepository<Advert>().Add(project);
                 if (uow.SaveChanges() > 0)
                 {
@@ -70,7 +114,7 @@ namespace ProjectHelping.WebApi.Controllers
 
         // DELETE api/<DeveloperController>/5
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public IActionResult Delete(string id)
         {
             using (UnitOfWork uow = new UnitOfWork())
             {

@@ -22,7 +22,7 @@ namespace ProjectHelping.WebApi.Controllers
 
         // GET api/<DeveloperController>/5
         [HttpGet("{id}")]
-        public Employer Get(int id)
+        public Employer Get(string id)
         {
             using (UnitOfWork uow = new UnitOfWork())
             {
@@ -31,6 +31,19 @@ namespace ProjectHelping.WebApi.Controllers
                 return employer;
             }
         }
+
+        [HttpGet("GetEmployerAdverts/{id}")]
+        public List<Advert> GetEmployerAdverts(string id)
+        {
+            using (UnitOfWork uow = new UnitOfWork())
+            {
+                var employer = uow.GetRepository<Employer>().Get(x => x.Id.Equals(id));
+                var adverts = uow.GetRepository<Advert>().GetAll(x => x.EmployerId.Equals(id))?.ToList();
+                return adverts;
+            }
+        }
+
+
 
         // PUT api/<DeveloperController>/5
         [HttpPut("Update")]
@@ -44,6 +57,11 @@ namespace ProjectHelping.WebApi.Controllers
             using (UnitOfWork uow = new UnitOfWork())
             {
                 var dev = uow.GetRepository<Employer>().Get(x => x.Id.Equals(employer.Id));
+                if (dev == null)
+                {
+                    return NotFound();
+                }
+                employer.Password = dev.Password;
                 Extensions.ObjectMapper.Map(dev, employer);
                 uow.GetRepository<Employer>().Update(dev);
                 if (uow.SaveChanges() > 0)
