@@ -1,14 +1,13 @@
-﻿using System;
+﻿using ProjectHelping.Data.Models;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProjectHelping.Data.Models
+namespace ProjectHelping.Business.Dto
 {
-    [Table("Relation")]
-    public class Relation
+    public class CommentDto
     {
         public string Id { get; set; }
         public string RelationType { get; set; }
@@ -18,5 +17,9 @@ namespace ProjectHelping.Data.Models
         public string SlaveId { get; set; }
         public string Comment { get; set; }
         public string Title { get; set; }
+        public string Name { get; set; }
+        public string Surname { get; set; }
+        public string Email { get; set; }
+
     }
 }

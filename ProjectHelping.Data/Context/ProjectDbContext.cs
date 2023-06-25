@@ -36,6 +36,9 @@ namespace ProjectHelping.Data.Context
         public DbSet<SubProject> SubProject { get; set; }
         public DbSet<Relation> Relation { get; set; }
         public DbSet<Recourse> Recourse { get; set; }
+        public DbSet<Education> Education { get; set; }
+        public DbSet<Skill> Skill { get; set; }
+        public DbSet<Experience> Experience { get; set; }
 
     }
 

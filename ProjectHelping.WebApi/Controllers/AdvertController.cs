@@ -59,10 +59,11 @@ namespace ProjectHelping.WebApi.Controllers
                 List<AdvertDto> resultList = new List<AdvertDto>();
                 var subprojects = uow.GetRepository<SubProject>().GetAll().ToList();
                 var employers = uow.GetRepository<Employer>().GetAll().ToList();
-                var relations = uow.GetRepository<Relation>().GetAll(x => x.SlaveId.Equals(id));
+                var relations = uow.GetRepository<Relation>().GetAll(x => x.SlaveId.Equals(id) && x.RelationType.Equals("favori"));
+                var adverts = uow.GetRepository<Advert>().GetAll().ToList();
                 foreach (var item in relations)
                 {
-                    var advert = uow.GetRepository<Advert>().Get(x => x.Id.Equals(item.MasterId));
+                    var advert = adverts.Where(x => x.Id.Equals(item.MasterId))?.FirstOrDefault();
                     var advertDto = ObjectMapper.Map<AdvertDto>(advert);
                     var employer = employers.Where(x => x.Id.Equals(advert.EmployerId))?.FirstOrDefault();
                     var subproject = subprojects.Where(x => x.Id.Equals(advert.SubProjectId))?.FirstOrDefault();

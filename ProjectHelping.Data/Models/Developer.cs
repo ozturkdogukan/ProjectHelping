@@ -16,9 +16,14 @@ namespace ProjectHelping.Data.Models
         public string Email { get; set; }
         public string Password { get; set; }
         public string Phone { get; set; }
+        public string BMail { get; set; }
         public string Name { get; set; }
+        public string Desc { get; set; }
+        public int Age { get; set; }
         public string Surname { get; set; }
+        public string JobExperience { get; set; }
         public string Expertise { get; set; }
+        public string Languages { get; set; }
         public string CRDT { get; set; }
         public string CRTM { get; set; }
 

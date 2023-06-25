@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ProjectHelping.Business.Dto;
 using ProjectHelping.Data.Models;
 using ProjectHelping.DataAccess.UnitOfWork;
+using ProjectHelping.Utils.Extensions;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -11,22 +13,45 @@ namespace ProjectHelping.WebApi.Controllers
     public class RelationController : ControllerBase
     {// GET: api/<DeveloperController>
         [HttpGet]
-        public IActionResult GetAll()
+        public IActionResult GetAll(string id)
         {
             using (UnitOfWork uow = new UnitOfWork())
             {
-                return Ok(uow.GetRepository<Relation>().GetAll().ToList());
+                return Ok(uow.GetRepository<Relation>().GetAll(x => x.SlaveId.Equals(id)).ToList());
             }
         }
 
         // GET api/<DeveloperController>/5
         [HttpGet("{id}")]
-        public Relation Get(string id)
+        public List<CommentDto> GetComments(string id)
         {
             using (UnitOfWork uow = new UnitOfWork())
             {
-                var project = uow.GetRepository<Relation>().Get(x => x.Id.Equals(id));
-                return project;
+                List<CommentDto> commentDtos = new List<CommentDto>();
+                var relations = uow.GetRepository<Relation>().GetAll(x => x.MasterId.Equals(id)).ToList();
+                var developers = uow.GetRepository<Developer>().GetAll().ToList();
+                var employers = uow.GetRepository<Employer>().GetAll().ToList();
+
+                foreach (var item in relations)
+                {
+                    var commentDto = ObjectMapper.Map<CommentDto>(item);
+                    if (employers.Any(x => x.Id.Equals(item.SlaveId)))
+                    {
+                        var employer = employers.Where(x => x.Id.Equals(item.SlaveId))?.FirstOrDefault();
+                        commentDto.Name = employer.Name;
+                        commentDto.Surname = employer.Surname;
+                        commentDto.Email = employer.Email;
+                    }
+                    else
+                    {
+                        var developer = developers.Where(x => x.Id.Equals(item.SlaveId))?.FirstOrDefault();
+                        commentDto.Name = developer.Name;
+                        commentDto.Surname = developer.Surname;
+                        commentDto.Email = developer.Email;
+                    }
+                    commentDtos.Add(commentDto);
+                }
+                return commentDtos;
             }
         }
 

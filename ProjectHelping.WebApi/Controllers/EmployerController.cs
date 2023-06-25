@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ProjectHelping.Business.Dto;
 using ProjectHelping.Data.Models;
 using ProjectHelping.DataAccess.UnitOfWork;
+using ProjectHelping.Utils.Extensions;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -33,13 +35,54 @@ namespace ProjectHelping.WebApi.Controllers
         }
 
         [HttpGet("GetEmployerAdverts/{id}")]
-        public List<Advert> GetEmployerAdverts(string id)
+        public List<AdvertDto> GetEmployerAdverts(string id)
+        {
+            using (UnitOfWork uow = new UnitOfWork())
+            {
+                List<AdvertDto> results = new List<AdvertDto>();
+                var employers = uow.GetRepository<Employer>().GetAll().ToList();
+                var adverts = uow.GetRepository<Advert>().GetAll(x => x.EmployerId.Equals(id))?.ToList();
+                var subProjects = uow.GetRepository<SubProject>().GetAll().ToList();
+                foreach (var item in adverts)
+                {
+                    var advertsDto = ObjectMapper.Map<AdvertDto>(item);
+                    advertsDto.SubProject = subProjects.Where(x => x.Id.Equals(item.SubProjectId))?.FirstOrDefault();
+                    advertsDto.Employer = employers.Where(x => x.Id.Equals(item.EmployerId))?.FirstOrDefault();
+                    results.Add(advertsDto);
+                }
+                return results;
+            }
+        }
+
+        [HttpGet("GetEmployerProjects/{id}")]
+        public List<Project> GetEmployerProjects(string id)
         {
             using (UnitOfWork uow = new UnitOfWork())
             {
                 var employer = uow.GetRepository<Employer>().Get(x => x.Id.Equals(id));
-                var adverts = uow.GetRepository<Advert>().GetAll(x => x.EmployerId.Equals(id))?.ToList();
-                return adverts;
+                if (employer is null)
+                {
+                    return null;
+                }
+                var projects = uow.GetRepository<Project>().GetAll(x => x.EmployerId.Equals(id))?.ToList();
+                return projects;
+            }
+        }
+
+
+        [HttpGet("GetEmployerSubProjects/{id}")]
+        public List<SubProject> GetEmployerSubProjects(string id)
+        {
+            using (UnitOfWork uow = new UnitOfWork())
+            {
+                var employer = uow.GetRepository<Employer>().Get(x => x.Id.Equals(id));
+                if (employer is null)
+                {
+                    return null;
+                }
+                var projects = uow.GetRepository<Project>().GetAll(x => x.EmployerId.Equals(id))?.Select(x => x.Id)?.ToArray();
+                var subProjects = uow.GetRepository<SubProject>().GetAll(x => projects.Contains(x.ProjectId))?.ToList();
+                return subProjects;
             }
         }
 

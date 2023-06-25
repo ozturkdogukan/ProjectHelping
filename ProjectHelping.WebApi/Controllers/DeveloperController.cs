@@ -10,6 +10,88 @@ namespace ProjectHelping.WebApi.Controllers
     [ApiController]
     public class DeveloperController : ControllerBase
     {
+
+        [HttpPost("AddSkill")]
+        public IActionResult AddSkill(Skill skills)
+        {
+            using (UnitOfWork uow = new UnitOfWork())
+            {
+                skills.Id = System.Guid.NewGuid().ToString();
+                uow.GetRepository<Skill>().Add(skills);
+                if (uow.SaveChanges() > 0)
+                {
+                    return Ok();
+                }
+                return StatusCode(500);
+            }
+        }
+
+        // GET api/<DeveloperController>/5
+        [HttpGet("GetSkills/{id}")]
+        public List<Skill> GetSkills(string id)
+        {
+            using (UnitOfWork uow = new UnitOfWork())
+            {
+                var developer = uow.GetRepository<Skill>().GetAll(x => x.UserId.Equals(id))?.ToList();
+                return developer;
+            }
+        }
+
+        [HttpPost("AddExperience")]
+        public IActionResult AddExperience(Experience experience)
+        {
+            using (UnitOfWork uow = new UnitOfWork())
+            {
+                experience.Id = System.Guid.NewGuid().ToString();
+                uow.GetRepository<Experience>().Add(experience);
+                if (uow.SaveChanges() > 0)
+                {
+                    return Ok();
+                }
+                return StatusCode(500);
+            }
+        }
+
+        // GET api/<DeveloperController>/5
+        [HttpGet("GetExperiences/{id}")]
+        public List<Experience> GetExperiences(string id)
+        {
+            using (UnitOfWork uow = new UnitOfWork())
+            {
+                var developer = uow.GetRepository<Experience>().GetAll(x => x.UserId.Equals(id)).ToList();
+                return developer;
+            }
+        }
+
+
+        [HttpPost("AddEducation")]
+        public IActionResult AddEducation(Education education)
+        {
+            using (UnitOfWork uow = new UnitOfWork())
+            {
+                education.Id = System.Guid.NewGuid().ToString();
+                uow.GetRepository<Education>().Add(education);
+                if (uow.SaveChanges() > 0)
+                {
+                    return Ok();
+                }
+                return StatusCode(500);
+            }
+        }
+
+        // GET api/<DeveloperController>/5
+        [HttpGet("GetEducations/{id}")]
+        public List<Education> GetEducations(string id)
+        {
+            using (UnitOfWork uow = new UnitOfWork())
+            {
+                var developer = uow.GetRepository<Education>().GetAll(x => x.UserId.Equals(id)).ToList();
+                return developer;
+            }
+        }
+
+
+
         // GET: api/<DeveloperController>
         [HttpGet]
         public IActionResult GetAll()
@@ -22,12 +104,11 @@ namespace ProjectHelping.WebApi.Controllers
 
         // GET api/<DeveloperController>/5
         [HttpGet("{id}")]
-        public Developer Get(int id)
+        public Developer Get(string id)
         {
             using (UnitOfWork uow = new UnitOfWork())
             {
                 var developer = uow.GetRepository<Developer>().Get(x => x.Id.Equals(id));
-                developer.Password = "";
                 return developer;
             }
         }
@@ -57,7 +138,7 @@ namespace ProjectHelping.WebApi.Controllers
 
         // DELETE api/<DeveloperController>/5
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public IActionResult Delete(string id)
         {
             using (UnitOfWork uow = new UnitOfWork())
             {
@@ -75,5 +156,8 @@ namespace ProjectHelping.WebApi.Controllers
             }
 
         }
+
+
+
     }
 }
